@@ -21,13 +21,15 @@ from utils import detect_language, normalize_egyptian_arabic, format_sources
 load_dotenv()
 
 # 'llama-3.3-70b-versatile' 2048 
-#"qwen/qwen3-32b"  4096
+#"qwen/qwen3-32b"  4096 / 3000
+# openai/gpt-oss-120b
+# 'openai/gpt-oss-20b'
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-LLM_MODEL_NAME = 'qwen/qwen3-32b'  
+LLM_MODEL_NAME = 'openai/gpt-oss-20b'  
 LLM_CACHE_FILE = "./llm_cache.json"
 MAX_TOKENS = 3000
-TOP_K_RETRIEVAL = 10
+TOP_K_RETRIEVAL = 8
 
 
 SYSTEM_PROMPT_AR = """أنت مساعد ذكي متخصص حصرياً في الإجابة على أسئلة جامعة بنها الأهلية (BNU).
@@ -38,7 +40,12 @@ SYSTEM_PROMPT_AR = """أنت مساعد ذكي متخصص حصرياً في ال
 3. لا تخترع أو تفترض أو تستنتج أي معلومة غير موجودة حرفياً في السياق.
 4. اللغة: إذا كتب المستخدم بالعامية المصرية، رد بالعامية المصرية. إذا كتب بالفصحى، رد بالفصحى. إذا كتب بالإنجليزية، رد بالإنجليزية.
 5. إذا كان السؤال عن رسوم أو مصاريف، اذكر الأرقام بدقة كما وردت في السياق.
-6. نسّق إجابتك بشكل واضح: استخدم عناوين ونقاط مرتبة عند الحاجة."""
+6. نسّق إجابتك دائماً بالشكل التالي:
+   - استخدم عناوين واضحة (مثل: ### العنوان)
+   - استخدم نقاط bullet أو مرقمة لكل عنصر
+   - لا تستخدم جداول أبداً
+   - اجعل كل نقطة قصيرة وواضحة
+   - افصل بين الأقسام بسطر فارغ"""
 
 SYSTEM_PROMPT_EN = """You are a smart assistant specialized exclusively in answering questions about Benha National University (BNU).
 
@@ -48,7 +55,12 @@ Strict instructions:
 3. Do NOT fabricate, assume, or infer any information not explicitly stated in the context.
 4. Language: if the user writes in Egyptian Arabic dialect, reply in Egyptian Arabic dialect. If they write in English, reply in English. If in Modern Standard Arabic, reply in Modern Standard Arabic.
 5. When discussing fees, state exact figures as they appear in the context.
-6. Format your answer clearly: use headers and bullet points where appropriate."""
+6. Always format your answer as follows:
+   - Use clear section headers (e.g. ### Header)
+   - Use bullet points or numbered lists for every item
+   - Never use tables
+   - Keep each point short and clear
+   - Add an empty line between sections"""
 
 
 class ResponseCache:
@@ -103,7 +115,7 @@ class GroqLLM:
                 model=LLM_MODEL_NAME,
                 messages=messages,
                 max_tokens=MAX_TOKENS,
-                temperature=0.1,
+                temperature=0.0,
             )
             text = response.choices[0].message.content or ""
             # Qwen3 models emit <think>...</think> reasoning blocks — strip them
