@@ -1,0 +1,30 @@
+# Embeddings (local BAAI/bge-m3)
+sentence-transformers>=3.0.0
+torch>=2.0.0
+
+# Reranker (Cohere API — no local model download)
+cohere>=5.0.0
+
+# Vector database
+chromadb==0.5.3
+numpy>=1.24.0
+
+# LLM API
+groq>=0.9.0
+
+# PDF / DOCX Processing
+pymupdf==1.24.9
+pdfplumber==0.11.4
+python-docx>=1.1.0
+
+# Hybrid retrieval (BM25 sparse index)
+rank-bm25>=0.2.2
+
+# Utilities
+langdetect==1.0.9
+tqdm==4.66.5
+colorama==0.4.6
+python-dotenv==1.0.1
+
+# Arabic tokenization
+pyarabic==0.6.15

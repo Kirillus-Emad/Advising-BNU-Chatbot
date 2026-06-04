@@ -1,0 +1,17 @@
+# Environment & secrets
+.env
+
+# Model cache (large files, re-downloaded automatically)
+model_cache/
+chroma_db/
+
+# Cache files
+llm_cache.json
+bm25_index.pkl
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.vscode/
+.idea/
